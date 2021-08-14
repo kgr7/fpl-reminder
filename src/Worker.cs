@@ -24,7 +24,6 @@ namespace FPL.Reminder
         public async Task Run([TimerTrigger("0 */15 * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Checking for upcoming deadline...");
-            await _webService.SendReminder(2, 12);
             var events = await _webService.GetEvents();
             await DoWork(events.Single(gw => gw.IsNext));
         }
