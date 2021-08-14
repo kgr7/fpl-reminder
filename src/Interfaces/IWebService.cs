@@ -10,5 +10,6 @@ namespace FPL.Reminder.src
     {
         Task<List<Event>> GetEvents();
         Task<bool> SendReminder(int hoursRemaining, int gameweek);
+        Task<bool> SendTestReminder();
     }
 }

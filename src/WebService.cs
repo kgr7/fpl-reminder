@@ -37,5 +37,16 @@ namespace FPL.Reminder.src
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<bool> SendTestReminder()
+        {
+            var msg = $"{_config.GetValue<string>("TestMentionRole")}, hourly test notification";
+            var webhookMsg = new WebhookMessage { Content = msg };
+            var webhookMsgAsString = JsonSerializer.Serialize(webhookMsg);
+            var webhookHttpString = new StringContent(webhookMsgAsString, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_config.GetValue<string>("TestWebhookUrl"), webhookHttpString);
+
+            return response.IsSuccessStatusCode;
+        }
     }
 }

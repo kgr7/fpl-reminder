@@ -32,7 +32,14 @@ namespace FPL.Reminder
             log.LogInformation("Checking for upcoming deadline...");
             log.LogInformation($"Mention role: {_config.GetValue<string>("MentionRole")}");
             log.LogInformation($"Webhook URL: {_config.GetValue<string>("WebhookUrl")}");
+            
             var events = await _webService.GetEvents();
+            
+            if (_dateTimeProvider.Now.Minute == 30)
+            {
+                await _webService.SendTestReminder();
+            }
+            
             await DoWork(events.Single(gw => gw.IsNext));
         }
 
