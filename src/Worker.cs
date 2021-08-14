@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FPL.Reminder.src;
 using FPL.Reminder.src.Models;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace FPL.Reminder
@@ -13,17 +14,24 @@ namespace FPL.Reminder
     {
         private readonly IWebService _webService;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IConfiguration _config;
 
-        public Worker(IWebService webService, IDateTimeProvider dateTimeProvider)
+        public Worker(
+            IWebService webService, 
+            IDateTimeProvider dateTimeProvider,
+            IConfiguration config)
         {
             _webService = webService;
             _dateTimeProvider = dateTimeProvider;
+            _config = config;
         }
 
         [FunctionName("FPLReminder")]
         public async Task Run([TimerTrigger("0 */15 * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Checking for upcoming deadline...");
+            log.LogInformation($"Mention role: {_config.GetValue<string>("MentionRole")}");
+            log.LogInformation($"Webhook URL: {_config.GetValue<string>("WebhookUrl")}");
             var events = await _webService.GetEvents();
             await DoWork(events.Single(gw => gw.IsNext));
         }
