@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FPL.Reminder.src;
 using FPL.Reminder.src.Models;
@@ -23,32 +24,31 @@ namespace FPL.Reminder
         public async Task Run([TimerTrigger("0 */15 * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation("Checking for upcoming deadline...");
-            await DoWork(await _webService.GetEvents());
+            await _webService.SendReminder(2, 12);
+            var events = await _webService.GetEvents();
+            await DoWork(events.Single(gw => gw.IsNext));
         }
 
-        public async Task DoWork(List<Event> events)
+        public async Task DoWork(Event e)
         {
-            foreach (var gameweek in events)
-            {
-                var oneDayAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.OneDay));
-                var halfDayAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.HalfDay));
-                var twoHoursAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.TwoHrs));
+            var oneDayAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.OneDay));
+            var halfDayAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.HalfDay));
+            var twoHoursAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.TwoHrs));
 
-                if (oneDayAhead == gameweek.DeadlineTime)
-                {
-                    // one day message
-                    await _webService.SendReminder(Consts.OneDay, gameweek.Id);
-                }
-                if (halfDayAhead == gameweek.DeadlineTime)
-                {
-                    // 12 hour message
-                    await _webService.SendReminder(Consts.HalfDay, gameweek.Id);
-                }
-                if (twoHoursAhead == gameweek.DeadlineTime)
-                {
-                    // 2 hour message
-                    await _webService.SendReminder(Consts.TwoHrs, gameweek.Id);
-                }
+            if (oneDayAhead == e.DeadlineTime)
+            {
+                // one day message
+                await _webService.SendReminder(Consts.OneDay, e.Id);
+            }
+            if (halfDayAhead == e.DeadlineTime)
+            {
+                // 12 hour message
+                await _webService.SendReminder(Consts.HalfDay, e.Id);
+            }
+            if (twoHoursAhead == e.DeadlineTime)
+            {
+                // 2 hour message
+                await _webService.SendReminder(Consts.TwoHrs, e.Id);
             }
         }
 

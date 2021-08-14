@@ -30,7 +30,7 @@ namespace FPL.Reminder.src
 
         public async Task<bool> SendReminder(int hoursRemaining, int gameweek)
         {
-            var msg = $"{hoursRemaining} hours until gameweek {gameweek} deadline";
+            var msg = $"{_config.GetValue<string>("MentionRole")}, {hoursRemaining} hours until gameweek {gameweek} deadline";
             var webhookMsg = new WebhookMessage { Content = msg };
             var webhookMsgAsString = JsonSerializer.Serialize(webhookMsg);
             var webhookHttpString = new StringContent(webhookMsgAsString, Encoding.UTF8, "application/json");
