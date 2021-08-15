@@ -34,8 +34,9 @@ namespace FPL.Reminder
             log.LogInformation($"Webhook URL: {_config.GetValue<string>("WebhookUrl")}");
             
             var events = await _webService.GetEvents();
-            
-            if (_dateTimeProvider.Now.Minute == 30)
+
+            var currentDatetime = _dateTimeProvider.Now;
+            if (currentDatetime.Hour == 22 && currentDatetime.Minute == 0)
             {
                 await _webService.SendTestReminder();
             }

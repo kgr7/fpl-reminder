@@ -40,7 +40,7 @@ namespace FPL.Reminder.src
 
         public async Task<bool> SendTestReminder()
         {
-            var msg = $"{_config.GetValue<string>("TestMentionRole")}, hourly test notification";
+            var msg = $"{_config.GetValue<string>("TestMentionRole")}, daily test notification";
             var webhookMsg = new WebhookMessage { Content = msg };
             var webhookMsgAsString = JsonSerializer.Serialize(webhookMsg);
             var webhookHttpString = new StringContent(webhookMsgAsString, Encoding.UTF8, "application/json");
