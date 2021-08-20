@@ -20,6 +20,6 @@ jobs:
     - name: Restore project dependencies
       run: dotnet restore "FPL.Reminder/FPL.Reminder.csproj"
     - name: Build
-      run: dotnet build "FPL.Reminder/FPL.Reminder.csproj" --no-restore
+      run: dotnet build "FPL.Reminder/FPL.Reminder.csproj"
     - name: Test
-      run: dotnet test "FPL.Reminder.Tests/FPL.Reminder.Tests.csproj" --no-build --verbosity normal
+      run: dotnet test "FPL.Reminder.Tests/FPL.Reminder.Tests.csproj"
