@@ -8,5 +8,9 @@ namespace FPL.Reminder.src
         {
             get { return DateTime.Now; }
         }
+        public DateTime UtcNow
+        {
+            get { return DateTime.UtcNow; }
+        }
     }
 }

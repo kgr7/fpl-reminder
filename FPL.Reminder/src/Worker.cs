@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FPL.Reminder.src;
@@ -32,10 +31,14 @@ namespace FPL.Reminder
             log.LogInformation("Checking for upcoming deadline...");
             log.LogInformation($"Mention role: {_config.GetValue<string>("MentionRole")}");
             log.LogInformation($"Webhook URL: {_config.GetValue<string>("WebhookUrl")}");
-            
+            log.LogInformation($"Current time to nearest 15: {ToNearest15Mins(_dateTimeProvider.UtcNow)}");
+            log.LogInformation($"Current time + 24hr to nearest 15: {ToNearest15Mins(_dateTimeProvider.UtcNow.AddHours(24))}");
+            log.LogInformation($"Current time + 12hr to nearest 15: {ToNearest15Mins(_dateTimeProvider.UtcNow.AddHours(12))}");
+            log.LogInformation($"Current time + 2hr to nearest 15: {ToNearest15Mins(_dateTimeProvider.UtcNow.AddHours(2))}");
+
             var events = await _webService.GetEvents();
 
-            var currentDatetime = _dateTimeProvider.Now;
+            var currentDatetime = _dateTimeProvider.UtcNow;
             if (currentDatetime.Hour == 22 && currentDatetime.Minute == 0)
             {
                 await _webService.SendTestReminder();
@@ -46,9 +49,9 @@ namespace FPL.Reminder
 
         public async Task DoWork(Event e)
         {
-            var oneDayAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.OneDay));
-            var halfDayAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.HalfDay));
-            var twoHoursAhead = ToNearest15Mins(_dateTimeProvider.Now.AddHours(Consts.TwoHrs));
+            var oneDayAhead = ToNearest15Mins(_dateTimeProvider.UtcNow.AddHours(Consts.OneDay));
+            var halfDayAhead = ToNearest15Mins(_dateTimeProvider.UtcNow.AddHours(Consts.HalfDay));
+            var twoHoursAhead = ToNearest15Mins(_dateTimeProvider.UtcNow.AddHours(Consts.TwoHrs));
 
             if (oneDayAhead == e.DeadlineTime)
             {
