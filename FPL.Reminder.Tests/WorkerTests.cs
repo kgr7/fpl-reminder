@@ -58,7 +58,7 @@ namespace FPL.Reminder.Tests
             var currentDateTime = DateTime.ParseExact(
                 currentTime,
                 "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                CultureInfo.CurrentCulture).ToUniversalTime();
+                CultureInfo.CurrentCulture).ToUniversalTime().AddTicks(1);
 
             _mockDateTimeProvider.Setup(x => x.UtcNow).Returns(currentDateTime);
 

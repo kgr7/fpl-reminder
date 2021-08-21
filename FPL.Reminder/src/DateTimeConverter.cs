@@ -13,8 +13,7 @@ namespace FPL.Reminder.src
             ref Utf8JsonReader reader,
             Type typeToConvert,
             JsonSerializerOptions options) =>
-                DateTime.ParseExact(reader.GetString(),
-                    "yyyy-MM-dd'T'HH:mm:ss'Z'", CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal).ToUniversalTime();
+                DateTime.Parse(reader.GetString()).ToUniversalTime();
 
         public override void Write(
             Utf8JsonWriter writer,
